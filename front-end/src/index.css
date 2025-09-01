@@ -1,0 +1,107 @@
+@import "tailwindcss";
+
+*{
+    font-family: 'poppins', sans-serif;
+}
+
+.navbar{
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 8%;
+}
+
+.navbar ul  {
+    padding: 5px 30px;
+    border-radius:30px;
+    box-shadow : 0 0 30px 0 rgba(0,0,0,0.1);
+}
+
+.navbar ul li{
+    display: inline-block;
+    padding: 15px 10px;
+    margin: 0 10px;
+}
+a.active{
+    color: orangered;
+}
+
+.navbar .buttons .active {
+    background: #000;
+    color: #fff;
+    margin-left: 5px;
+}
+.navbar button{
+    padding: 10px 15px;
+    border:0;
+    outline: 0;
+    border-radius: 30px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.container{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 80vh;
+}
+
+.container h1{
+    font-size: 50px;
+    font-weight: 500;
+}
+.products-buttons{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    margin-top: 10px;
+   padding-bottom: 20px;
+}
+.products-buttons button{
+    padding: 10px 15px;
+    border:0;
+    outline: 0;
+    border-radius: 30px;
+    font-size: 16px;
+    cursor: pointer;
+    background: #000;
+    color: #fff;
+}
+
+.products{
+    padding: 40px 0;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+}
+
+.products a{
+    flex: 1;
+    text-decoration: none;
+    padding: 10px;
+    background: #efefef;
+    color: #000000;
+}
+
+.product-details{
+    padding: 50px 0;
+}
+
+.product-details p{
+    max-width: 800px;
+    padding: 10px 0;
+}
+ .product-details button{
+     background: #000000;
+     color: #fff;
+     border: 0;
+     outline: 0;
+     padding: 5px 15px;
+    margin-top: 10px;
+     cursor: pointer;
+ }
