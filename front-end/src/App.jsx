@@ -10,7 +10,8 @@ import {
 import Home from "./pages/Home";
 import {
     productDetailsLoader,
-    productsLoader
+    productsLoader,
+    updateProduct
 } from "./loaders/productsLoader";
 import Categories from "./pages/Categories";
 import Orders from "./pages/Orders.jsx";
@@ -19,6 +20,8 @@ import Registration from "./pages/auth/Registration";
 import RootLayout from "./layout/RooteLayout"
 import ProductLayout from "./layout/ProductLayout"
 import Create from "./components/Product/Create"
+import Edit from "./components/Product/Edit"
+
 import React from "react";
 import NotFound from "./components/NotFound";
 import Error from "./components/Error";
@@ -28,13 +31,25 @@ import Products
 import Show
     from "./components/Product/Show.jsx";
 
+import  ShowCategory
+from "./components/Categories/ShowCategory .jsx";
+import {
+    categoriesLoader,
+    categoryDetailsLoader
+} from "./loaders/categoriesLoader.js";
+import CategoryLayout
+    from "./layout/CategoryLayout.jsx";
+import EditCategory
+    from "./components/Categories/EditCategory.jsx";
+
 
 function App() {
     const router = createBrowserRouter(
         createRoutesFromElements(
             <Route path="/" element={<RootLayout />} >
                 <Route index element={<Home />} />
-                <Route path='products' element={<ProductLayout /> }  errorElement={<Error />}>
+                <Route path='products' element={<ProductLayout /> }
+                       errorElement={<Error />}>
                     <Route
                         index
                         element={<Products />}
@@ -44,8 +59,25 @@ function App() {
                     <Route path=':id' element={<Show />} loader={productDetailsLoader}
                     />
                     <Route path='create' element={<Create />} />
+                    <Route path=':id/edit' element={<Edit />} loader={productDetailsLoader} />
+
                 </Route>
-                <Route path='categories' element={<Categories />} />
+
+                <Route path='categories' element={<CategoryLayout /> }
+                       errorElement={<Error />}>
+                    <Route
+                        index
+                        element={<Categories />}
+                        loader={categoriesLoader}
+
+                    />
+                    <Route path=':id' element={<ShowCategory />} loader={categoryDetailsLoader}
+                    />
+                    <Route path=':id/edit' element={<EditCategory />} loader={categoryDetailsLoader} />
+
+
+                </Route>
+
                 <Route path='Orders' element={<Orders />} />
 
                 <Route path="login" element={<Login />} />

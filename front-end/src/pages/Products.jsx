@@ -1,14 +1,20 @@
 import React from "react";
-import { useLoaderData, Link, useNavigate } from "react-router-dom";
+import { useLoaderData, Link, useNavigate, useRevalidator} from "react-router-dom";
+
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import Button from '@mui/material/Button';
+import {
+    deleteProduct
+} from "../loaders/productsLoader.js";
 
 
 const Products = () => {
     const productsData = useLoaderData();
     const products = productsData.data || [];
     const navigate = useNavigate();
+    const revalidator = useRevalidator(); // hook to revalidate loader
+
 
     const handleOrder = (productId) => {
         navigate(`/products/${productId}/order`);
@@ -18,10 +24,16 @@ const Products = () => {
         navigate(`/products/${productId}/edit`);
     };
 
-    const handleDelete = (productId) => {
-        if (window.confirm("Are you sure you want to delete this product?")) {
-            // Call your delete API here
-            console.log("Delete product", productId);
+    const handleDelete = async (id) => {
+        if (!window.confirm("Are you sure you want to delete this product?")) return;
+
+        try {
+            await deleteProduct(id);
+            alert("Product deleted successfully!");
+            revalidator.revalidate(); // refresh loader data
+        } catch (error) {
+            console.error(error);
+            alert("Failed to delete product.");
         }
     };
 

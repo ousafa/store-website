@@ -28,12 +28,22 @@ const Navbar = () => {
             </ul>
             <div className='buttons'>
                 {isLoggedIn ? (
-                    <button
-                        onClick={handleLogout}
-                        className="bg-gray-100 text-black py-2 rounded-lg hover:bg-gray-800 hover:text-white transition duration-200"
-                    >
-                        Logout
-                    </button>
+                    <>
+                        <button
+                            onClick={() => navigate("/products/create")}
+                            className="bg-violet-600 text-white px-6 py-2 rounded-lg hover:bg-violet-700 transition cursor-pointer mr-5"
+                        >
+                            Create Product
+                        </button>
+
+                        <button
+                            onClick={handleLogout}
+                            className="bg-gray-100 text-black py-2 rounded-lg hover:bg-gray-800 hover:text-white transition duration-200"
+                        >
+                            Logout
+                        </button>
+                    </>
+
 
                 ) : (
                     <>
