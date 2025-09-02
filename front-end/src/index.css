@@ -24,13 +24,8 @@
     margin: 0 10px;
 }
 a.active{
-    color: orangered;
-}
-
-.navbar .buttons .active {
-    background: #000;
-    color: #fff;
-    margin-left: 5px;
+    color: #7536B0;
+    font-weight: bold;
 }
 .navbar button{
     padding: 10px 15px;
@@ -40,6 +35,13 @@ a.active{
     font-size: 16px;
     cursor: pointer;
 }
+
+.navbar .buttons .active {
+    background: #000;
+    color: #fff;
+    margin-left: 5px;
+}
+
 
 .container{
     display: flex;

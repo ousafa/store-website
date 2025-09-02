@@ -7,13 +7,15 @@ const Error = () => {
     const error = useRouteError()
     const navigate = useNavigate()
     return (
-        <div className="product-details">
-            <h3 style={{ color: "gray", fontWeight: "normal" }}>
-                An error occurred | {error.message}.
-            </h3>
-
-            <button  onClick={()=>{navigate('/')}}>Go to homePage</button>
+        <div className="flex justify-center items-center w-full h-120">
+            <div className="product-details text-center">
+                <h3 style={{ color: "gray", fontWeight: "normal" }}>
+                    Unauthenticated | {error.message}.
+                </h3>
+                <button  onClick={()=>{navigate('/')}} className="rounded">Go to homePage</button>
+            </div>
         </div>
+
     )
 }
 
