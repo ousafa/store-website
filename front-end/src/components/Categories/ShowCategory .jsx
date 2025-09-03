@@ -1,13 +1,23 @@
 import React from 'react';
-import { useLoaderData, useNavigate, Link } from "react-router-dom";
+import {
+    useLoaderData,
+    useNavigate,
+    Link,
+    useRevalidator
+} from "react-router-dom";
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import Button from '@mui/material/Button';
+import {
+    deleteCategory
+} from "../../loaders/categoriesLoader.js";
 
 const ShowCategory = () => {
     const categoryDetails = useLoaderData();
     const category = categoryDetails.data;
     const navigate = useNavigate();
+    const revalidator = useRevalidator(); // hook to revalidate loader
+
 
     if (!category) {
         return (
@@ -21,10 +31,16 @@ const ShowCategory = () => {
         navigate(`/categories/${category.id}/edit`);
     };
 
-    const handleDelete = () => {
-        if (window.confirm("Are you sure you want to delete this category?")) {
-            console.log("Delete category", category.id);
-            // Call delete API here
+    const handleDelete = async (id) => {
+        if (!window.confirm("Are you sure you want to delete this product?")) return;
+
+        try {
+            await deleteCategory(id);
+            alert("Category deleted successfully!");
+            revalidator.revalidate(); // refresh loader data
+        } catch (error) {
+            console.error(error);
+            alert("Failed to delete category.");
         }
     };
 

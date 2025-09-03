@@ -19,7 +19,7 @@ import Login from "./pages/auth/Login";
 import Registration from "./pages/auth/Registration";
 import RootLayout from "./layout/RooteLayout"
 import ProductLayout from "./layout/ProductLayout"
-import Create from "./components/Product/Create"
+import Create from "./components/Product/CreateProduct.jsx"
 import Edit from "./components/Product/Edit"
 
 import React from "react";
@@ -41,6 +41,10 @@ import CategoryLayout
     from "./layout/CategoryLayout.jsx";
 import EditCategory
     from "./components/Categories/EditCategory.jsx";
+import CreateCategory
+    from "./components/Categories/CreateCategory.jsx";
+import CreateProduct
+    from "./components/Product/CreateProduct.jsx";
 
 
 function App() {
@@ -58,7 +62,7 @@ function App() {
                     />
                     <Route path=':id' element={<Show />} loader={productDetailsLoader}
                     />
-                    <Route path='create' element={<Create />} />
+                    <Route path='create' element={<CreateProduct />} />
                     <Route path=':id/edit' element={<Edit />} loader={productDetailsLoader} />
 
                 </Route>
@@ -73,6 +77,9 @@ function App() {
                     />
                     <Route path=':id' element={<ShowCategory />} loader={categoryDetailsLoader}
                     />
+
+                    <Route path='create' element={<CreateCategory />} />
+
                     <Route path=':id/edit' element={<EditCategory />} loader={categoryDetailsLoader} />
 
 

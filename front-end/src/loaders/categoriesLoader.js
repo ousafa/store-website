@@ -40,10 +40,9 @@ export const categoryDetailsLoader = async ({ params }) => {
     return response.json();
 };
 
-
-export const updateCategory = async (id, formData) => {
-    const response = await fetch(`${BASE_URL}/categories/${id}`, {
-        method: "POST", // use _method=PATCH inside formData
+export const createCategory = async (formData) => {
+    const response = await fetch(`${BASE_URL}/categories`, {
+        method: "POST",
         headers: {
             Accept: "application/json",
             Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -55,8 +54,51 @@ export const updateCategory = async (id, formData) => {
 
     if (!response.ok) {
         console.error("Validation errors:", data.errors);
-        throw new Error("Failed to update category");
+        throw data.errors;
     }
 
     return data;
+};
+
+export const updateCategory = async (id, formData) => {
+    const response = await fetch(`${BASE_URL}/categories/${id}`, {
+        method: "POST", // Laravel _method=PATCH
+        headers: {
+            Accept: "application/json",
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+        body: formData,
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+        console.error("Validation errors:", data.errors);
+        // Toujours renvoyer un objet structuré
+        throw {
+            message: data.message || "Validation failed",
+            errors: data.errors || {},
+        };
+    }
+
+    return data;
+};
+
+
+export const deleteCategory = async (id) => {
+    const response = await fetch(`${BASE_URL}/categories/${id}`, {
+        method: "DELETE",
+        headers: {
+            Accept: "application/json",
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+    });
+
+    if (!response.ok) {
+        const errorData = await response.json();
+        console.error("Error deleting category:", errorData);
+        throw new Error("Failed to delete category");
+    }
+
+    return response.json(); // Backend usually returns a success message
 };

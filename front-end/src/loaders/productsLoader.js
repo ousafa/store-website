@@ -48,33 +48,31 @@ export const productDetailsLoader = async ({ params }) => {
 };
 
 // Create Product
-export const createProduct = async (data, isFormData = false) => {
-    const token = localStorage.getItem("token");
-    const headers = {
-        Accept: "application/json",
-        Authorization: `Bearer ${token}`,
-    };
-    // if (!isFormData) headers["Content-Type"] = "application/json";
-
+export const createProduct = async (formData) => {
     const response = await fetch(`${BASE_URL}/products`, {
         method: "POST",
-        headers,
-        body: isFormData ? data : JSON.stringify(data),
+        headers: {
+            Accept: "application/json",
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+        body: formData,
     });
 
+    const data = await response.json();
+
     if (!response.ok) {
-        const errorData = await response.json();
-        console.log("Validation errors:", errorData.errors);
-        throw new Error("Failed to create product");
+        console.error("Validation errors:", data.errors);
+        throw data.errors;
     }
 
-    return response.json();
+    return data;
 };
+
 // Update Product
 export  const updateProduct = async (id, formData) => {
     try {
         const response = await fetch(`${BASE_URL}/products/${id}`, {
-            method: "PUT",
+            method: "POST",
             headers: {
                 Accept: "application/json",
                 Authorization: `Bearer ${localStorage.getItem("token")}`,

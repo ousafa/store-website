@@ -1,10 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { useLoaderData, useNavigate } from "react-router-dom";
-import { updateProduct, getCategories } from "../../loaders/productsLoader.js";
+import { useNavigate } from "react-router-dom";
+import { getCategories, createProduct } from "../../loaders/productsLoader.js";
 
-const Edit = () => {
-    const productDetails = useLoaderData();
-    const product = productDetails.data;
+const CreateProduct = () => {
     const navigate = useNavigate();
 
     // Categories state
@@ -12,19 +10,22 @@ const Edit = () => {
 
     // Form state
     const [formData, setFormData] = useState({
-        name: product.attributes.name || "",
-        description: product.attributes.description || "",
-        price: product.attributes.price || "",
-        stock: product.attributes.stock || "",
-        category: product.relationships?.category?.data?.id || "",
-        image: null, // for file upload
+        name: "",
+        description: "",
+        price: "",
+        stock: "",
+        category: "",
+        image: null,
     });
 
+    // Validation errors
+    const [errors, setErrors] = useState({});
+
+    // Fetch categories
     useEffect(() => {
-        // Fetch categories for select dropdown
         const fetchCategories = async () => {
             try {
-                const data = await getCategories(); // should return array of categories
+                const data = await getCategories();
                 setCategories(data);
             } catch (error) {
                 console.error("Failed to load categories:", error);
@@ -33,47 +34,54 @@ const Edit = () => {
         fetchCategories();
     }, []);
 
+    // Handle input change
     const handleChange = (e) => {
         const { name, value, files } = e.target;
         if (name === "image") {
-            setFormData({ ...formData, image: files[0] }); // store file
+            setFormData({ ...formData, image: files[0] });
         } else {
             setFormData({ ...formData, [name]: value });
         }
     };
 
+    // Handle form submit
     const handleSubmit = async (e) => {
         e.preventDefault();
-
-        const payload = new FormData();
-        payload.append("_method", "PATCH"); // Laravel method spoofing
-        payload.append("name", formData.name);
-        payload.append("description", formData.description);
-        payload.append("price", formData.price);
-        payload.append("stock", formData.stock);
-        payload.append("category_id", formData.category); // adjust according to API
-        if (formData.image) {
-            payload.append("image", formData.image);
-        }
+        setErrors({}); // reset errors
 
         try {
-            await updateProduct(product.id, payload, true); // pass multipart/form-data flag
+            const payload = new FormData();
+            payload.append("data[attributes][name]", formData.name);
+            payload.append("data[attributes][description]", formData.description);
+            payload.append("data[attributes][price]", formData.price);
+            payload.append("data[attributes][stock]", formData.stock);
+            payload.append("data[relationships][category][data][id]", formData.category);
+
+            if (formData.image) {
+                payload.append("data[attributes][image]", formData.image);
+            }
+
+            await createProduct(payload);
             navigate("/products");
-        } catch (error) {
-            console.error("Error updating product:", error);
+        } catch (err) {
+            console.error("Create product error:", err);
+            setErrors(err); // err should be backend validation errors
         }
     };
 
     return (
-        <div className="flex justify-center mt-10">
-            <form
-                onSubmit={handleSubmit}
-                className="w-full max-w-lg bg-white shadow-lg rounded-lg p-6"
-                encType="multipart/form-data"
-            >
-                <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center">
-                    Edit Product
-                </h2>
+        <div className="flex justify-center mt-10 mb-10">
+            <form onSubmit={handleSubmit} className="w-full max-w-lg" encType="multipart/form-data">
+                <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center">Create Product</h2>
+
+                {/* Error Display */}
+                {errors && Object.keys(errors).length > 0 && (
+                    <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+                        {Object.entries(errors).map(([key, messages]) => (
+                            <p key={key}>{messages.join(", ")}</p>
+                        ))}
+                    </div>
+                )}
 
                 {/* Name */}
                 <div className="mb-4">
@@ -149,21 +157,21 @@ const Edit = () => {
                         name="image"
                         accept="image/*"
                         onChange={handleChange}
-                        className="w-full"
+                        className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring focus:ring-violet-300"
                     />
                 </div>
 
                 <div className="flex justify-between">
                     <button
                         type="submit"
-                        className="bg-violet-600 text-white px-6 py-2 rounded-lg hover:bg-violet-700 transition"
+                        className="bg-violet-600 text-white px-6 py-2 rounded-lg hover:bg-violet-700 transition cursor-pointer"
                     >
-                        Save
+                        Create
                     </button>
                     <button
                         type="button"
                         onClick={() => navigate("/products")}
-                        className="bg-gray-300 text-black px-6 py-2 rounded-lg hover:bg-gray-400 transition"
+                        className="bg-gray-300 text-black px-6 py-2 rounded-lg hover:bg-gray-400 transition cursor-pointer"
                     >
                         Cancel
                     </button>
@@ -173,4 +181,4 @@ const Edit = () => {
     );
 };
 
-export default Edit;
+export default CreateProduct;
