@@ -15,7 +15,7 @@ const CreateProduct = () => {
         price: "",
         stock: "",
         category: "",
-        image: null,
+        image: "",
     });
 
     // Validation errors
@@ -74,14 +74,7 @@ const CreateProduct = () => {
             <form onSubmit={handleSubmit} className="w-full max-w-lg" encType="multipart/form-data">
                 <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center">Create Product</h2>
 
-                {/* Error Display */}
-                {errors && Object.keys(errors).length > 0 && (
-                    <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
-                        {Object.entries(errors).map(([key, messages]) => (
-                            <p key={key}>{messages.join(", ")}</p>
-                        ))}
-                    </div>
-                )}
+
 
                 {/* Name */}
                 <div className="mb-4">
@@ -150,7 +143,7 @@ const CreateProduct = () => {
                 </div>
 
                 {/* Image */}
-                <div className="mb-6">
+                <div className="mb-2">
                     <label className="block text-gray-700 mb-2">Product Image</label>
                     <input
                         type="file"
@@ -160,7 +153,14 @@ const CreateProduct = () => {
                         className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring focus:ring-violet-300"
                     />
                 </div>
-
+                {/* Error Display */}
+                {errors && Object.keys(errors).length > 0 && (
+                    <div className="text-red-600 px-4 py-3 rounded mb-3">
+                        {Object.entries(errors).map(([key, messages]) => (
+                            <p key={key}>*{messages.join(", ")}</p>
+                        ))}
+                    </div>
+                )}
                 <div className="flex justify-between">
                     <button
                         type="submit"

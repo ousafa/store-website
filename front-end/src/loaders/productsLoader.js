@@ -68,31 +68,27 @@ export const createProduct = async (formData) => {
     return data;
 };
 
-// Update Product
-export  const updateProduct = async (id, formData) => {
-    try {
-        const response = await fetch(`${BASE_URL}/products/${id}`, {
-            method: "POST",
-            headers: {
-                Accept: "application/json",
-                Authorization: `Bearer ${localStorage.getItem("token")}`,
-            },
-            body: formData,
-        });
+export const updateProduct = async (id, payload, isFormData = false) => {
+    const headers = {
+        Accept: "application/json",
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+    };
+    if (!isFormData) headers["Content-Type"] = "application/json";
 
+    const response = await fetch(`${BASE_URL}/products/${id}`, {
+        method: "POST", // use _method=PUT inside FormData
+        headers,
+        body: payload,
+    });
+
+    if (!response.ok) {
         const data = await response.json();
-
-        if (!response.ok) {
-            console.error("Validation errors:", data.errors);
-            throw new Error("Failed to update product");
-        }
-
-        return data;
-    } catch (error) {
-        console.error("Update product failed:", error);
-        throw error;
+        throw data.errors || new Error("Failed to update product");
     }
+
+    return response.json();
 };
+
 
 
 
