@@ -26,6 +26,17 @@ class BaseProductRequest extends FormRequest
         return $attributesToUpdate;
     }
 
+    public function attributes(): array
+    {
+        return [
+            'data.attributes.name'        => 'name',
+            'data.attributes.description' => 'description',
+            'data.attributes.price'       => 'price',
+            'data.attributes.stock'       => 'stock',
+            'data.attributes.image'       => 'image',
+            'data.relationships.category.data.id' => 'category',
+        ];
+    }
     public function messages() {
         return [
             'data.attributes.image' => 'The data.attributes.image type is invalid. Only jpg, jpeg, png allowed.'

@@ -45,6 +45,15 @@ class ProductController extends Controller
             'category_id' => $request->input('data.relationships.category.data.id')
         ];
 
+        // Handle image upload
+        if ($request->hasFile('data.attributes.image')) {
+            $file = $request->file('data.attributes.image');
+            $filename = time() . '_' . $file->getClientOriginalName();
+            $file->storeAs('products', $filename, 'public');
+
+            $model['image'] = $filename;
+        }
+
         return new ProductResource(Product::create($model));
     }
 
@@ -53,36 +62,45 @@ class ProductController extends Controller
      */
     public function show($product_id)
     {
-        try{
+        try {
             $product = Product::with('category')->findOrFail($product_id);
 
-            new ProductResource($product->load('category'));
+            return new ProductResource($product);
 
-        }catch(ModelNotFoundException $e){
-
+        } catch (ModelNotFoundException $e) {
             return $this->error('Product cannot be found.', 404);
-
         }
-
     }
+
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateProductRequest $request, $product_id)
-    {
-        //PATCH
+        public function update(UpdateProductRequest $request, $product_id)
+        {
+            try {
+                $product = Product::findOrFail($product_id);
 
-        try {
-            $product = Product::findOrFail($product_id);
+                // Get all mapped attributes from the request
+                $attributes = $request->mappedAttributes();
 
-            $product->update($request->mappedAttributes());
+                // Handle image upload
+                if ($request->hasFile('data.attributes.image')) {
+                    $file = $request->file('data.attributes.image');
+                    $filename = time() . '_' . $file->getClientOriginalName();
+                    $file->storeAs('products', $filename, 'public');
 
-            return new ProductResource($product->load('category'));
-        }catch (ModelNotFoundException $e){
-            return $this->error('Product cannot be found.', 404);
+                    $attributes['image'] = $filename;                 }
+
+                // Update the product
+                $product->update($attributes);
+
+                return new ProductResource($product->load('category'));
+            } catch (ModelNotFoundException $e) {
+                return $this->error('Product cannot be found.', 404);
+            }
         }
-    }
+
 
     /**
      * Replace the specified resource in storage.
@@ -97,11 +115,19 @@ class ProductController extends Controller
                 'description' => $request->input('data.attributes.description'),
                 'price'       => $request->input('data.attributes.price'),
                 'stock'       => $request->input('data.attributes.stock'),
-                'category_id' => $request->input('data.relationships.category.data.id')
+                'category_id' => $request->input('data.relationships.category.data.id'),
             ];
 
+            // Handle image upload
+            if ($request->hasFile('data.attributes.image')) {
+                $file = $request->file('data.attributes.image');
+                $filename = time() . '_' . $file->getClientOriginalName();
+                $file->storeAs('public/products', $filename);
+                $model['image'] = $filename;
+            }
 
             $product->update($model);
+
 
             return new ProductResource($product->load('category'));
 

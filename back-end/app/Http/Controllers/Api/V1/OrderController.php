@@ -2,33 +2,57 @@
 
 namespace App\Http\Controllers\Api\V1;
 
+use App\Http\Actions\Api\V1\StoreOrderAction;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Api\V1\StoreOrderItemRequest;
+use App\Http\Requests\Api\V1\StoreOrderRequest;
+use App\Http\Resources\V1\OrderResource;
+use App\Http\Traits\ApiResponses;
+use App\Models\Order;
+use App\Models\product;
 use Illuminate\Http\Request;
 
 class OrderController extends Controller
 {
+    Use ApiResponses;
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        //
+        return OrderResource::collection(Order::with('items')->paginate(10));
+
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
-    {
-        //
+    public function store(
+        StoreOrderItemRequest $requestItem,
+        StoreOrderRequest $requestOrder,
+        StoreOrderAction $action
+    ) {
+        // Execute the business logic (verify stock, reduce stock, calculate total, etc.)
+        $order = $action->execute($requestItem, $requestOrder);
+
+        // Return API response
+        //return new OrderResource($order);
+        return response()->json($order);
+
+
+//
+//        $order  = new OrderResource(Order::create($request->mappedAttributes()));
+//        $items =  $request->input('data.includes.items');
+//
+//        foreach ($items as $item) {
+//            $order->items()->create([
+//                'product_id' => $item['product_id'],
+//                'quantity'   => $item['quantity'],
+//                'price'      => $item['price'],
+//            ]);
+//        }
+//        return new OrderResource($order->load('items'));
     }
 
     /**
@@ -36,16 +60,13 @@ class OrderController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $order = Order::with('items')->findOrFail($id);
+
+        return new OrderResource($order);
+
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
+
 
     /**
      * Update the specified resource in storage.

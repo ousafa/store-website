@@ -26,7 +26,7 @@ class StoreProductRequest extends BaseProductRequest
             'data.attributes.description' => 'nullable|string',
             'data.attributes.price'       => 'required|numeric|min:0',
             'data.attributes.stock'       => 'required|integer|min:0',
-            'data.attributes.image'       => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+            'data.attributes.image' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
 //            'data.relationships.category.data.id' => 'required|exists:categories,id',
         ];
 

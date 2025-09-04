@@ -18,9 +18,8 @@ class CategoryController extends Controller
     use ApiResponses;
     public function index()
     {
-        return CategoryResource::class::collection(Category::paginate(10));
+        return CategoryResource::collection(Category::paginate(10));
     }
-
 
 
     /**

@@ -4,12 +4,13 @@ namespace App\Http\Requests\Api\V1;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class UpdateCategoryRequest extends BaseCategoryRequest
+class StoreOrderItemRequest extends BaseOrderItemRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
+
     {
         return true;
     }
@@ -21,11 +22,16 @@ class UpdateCategoryRequest extends BaseCategoryRequest
      */
     public function rules(): array
     {
-        $rules = [
-            'data.attributes.name' => 'sometimes|string|max:255',
-            'data.attributes.description' => 'sometimes|nullable|string|max:1000',
-        ];
 
-        return $rules;
+
+        return [
+            'data.includes.items' => ['required', 'array', 'min:1'],
+
+            'data.includes.items.*.product_id' => ['required', 'integer', 'exists:products,id'],
+            'data.includes.items.*.quantity'   => ['required', 'integer', 'min:1'],
+            'data.includes.items.*.price'      => ['required', 'numeric', 'min:0'],
+        ];
     }
+
+
 }

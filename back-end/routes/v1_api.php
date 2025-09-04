@@ -26,7 +26,7 @@ Route::prefix('v1')
 
 
         // Orders
-        Route::apiResource('orders', OrderController::class)  ;
+        Route::apiResource('/orders', OrderController::class);
 
 
 
