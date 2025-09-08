@@ -30,6 +30,7 @@ class AuthController extends Controller
                     ['*'],
                     now()->addMonth()
                 )->plainTextToken,
+                "id" => $user->id
             ]
         );
     }

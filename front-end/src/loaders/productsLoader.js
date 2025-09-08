@@ -80,10 +80,11 @@ export const updateProduct = async (id, payload, isFormData = false) => {
         headers,
         body: payload,
     });
+    const data = await response.json();
 
     if (!response.ok) {
-        const data = await response.json();
-        throw data.errors || new Error("Failed to update product");
+        console.error("Validation errors:", data.errors);
+        throw data.errors;
     }
 
     return response.json();
@@ -110,4 +111,30 @@ export const deleteProduct = async (id) => {
     }
 
     return response.json(); // Backend usually returns a success message
+};
+
+
+// Order Product
+export const orderProduct = async (payload) => {
+    const response = await fetch(`${BASE_URL}/orders`, {
+        method: "POST",
+        headers: {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+        body: JSON.stringify(payload),
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+        // Throw an actual Error object with message
+        const message = data.message || "Failed to order product";
+        const err = new Error(message);
+        err.errors = data.errors || null; // optional, for detailed errors
+        throw err;
+    }
+
+    return data;
 };

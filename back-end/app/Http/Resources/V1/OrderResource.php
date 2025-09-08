@@ -12,7 +12,7 @@ class OrderResource extends JsonResource
      *
      * @return array<string, mixed>
      */
-    public function toArray(Request $request): array
+    public function toArray( Request $request) : array
     {
         return [
             'id' => $this->id,
@@ -25,19 +25,16 @@ class OrderResource extends JsonResource
                 'updated_at' => $this->updated_at,
             ],
             'relationships' => [
-                'items' => [
-                    'data' => $this->items->map(fn($item) => [
-                        'type' => 'order_items',
-                        'id' => $item->id,
-                    ]),
-                    'links' =>[
-                        // optional: 'self' => route('orders.items', $this->id)
-                    ]
-                ]
+                'items' => $this->items->map(fn($item) => [
+                    'type' => 'order_items',
+                    'id' => $item->id
+                ])
             ],
             'includes' => [
-                'items' => OrderItemResource::collection($this->items),
+                'user' => new UserResource($this->whenLoaded('user')),
+                'items' => OrderItemResource::collection($this->whenLoaded('items')),
             ]
         ];
     }
+
 }

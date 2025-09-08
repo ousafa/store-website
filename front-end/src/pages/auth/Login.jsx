@@ -13,6 +13,8 @@ const Login = () => {
         try {
             const data = await loginUser(email, password);
             localStorage.setItem('token', data.payload.token);
+            localStorage.setItem('user_id', data.payload.id); // store user ID
+
             window.location.href = '/';
         } catch (err) {
             setError(err.message);

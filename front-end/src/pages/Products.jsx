@@ -5,7 +5,8 @@ import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import Button from '@mui/material/Button';
 import {
-    deleteProduct
+    deleteProduct,
+    orderProduct
 } from "../loaders/productsLoader.js";
 
 
@@ -16,9 +17,56 @@ const Products = () => {
     const revalidator = useRevalidator(); // hook to revalidate loader
 
 
-    const handleOrder = (productId) => {
-        navigate(`/products/${productId}/order`);
+    const handleOrder = async (product) => {
+        if (!window.confirm(`Are you sure you want to order ${product.attributes.name}?`)) return;
+
+        try {
+
+            const userId = localStorage.getItem("user_id"); // make sure you saved it on login
+
+            const payload = {
+                data: {
+                    attributes: {
+                        user_id: userId,
+                        status: "pending"
+                    },
+                    includes: {
+                        items: [
+                            {
+                                product_id: product.id,
+                                quantity: 1,
+                                price: product.attributes.price
+                            }
+                        ]
+                    }
+                }
+            };
+
+
+            await orderProduct(payload);
+
+            // après orderProduct(formData)
+            alert("Product ordered successfully!");
+
+            // Incrémente le badge
+            let currentCount = parseInt(localStorage.getItem("orderCount")) || 0;
+            currentCount += 1;
+            localStorage.setItem("orderCount", currentCount.toString());
+
+            // Re-render Navbar si nécessaire
+            window.dispatchEvent(new Event("storage"));
+
+        }catch (error) {
+                console.error(error);
+                if (error.errors) {
+                    alert("Failed to order product:\n" + Object.values(error.errors).flat().join("\n"));
+                } else {
+                    alert("Failed to order product: " + error.message);
+                }
+        }
+
     };
+
 
     const handleEdit = (productId) => {
         navigate(`/products/${productId}/edit`);
@@ -83,14 +131,15 @@ const Products = () => {
                             </Link>
 
                     {/* Order Button */}
-                    <button
-                        onClick={() => handleOrder(product.id)}
-                        className="mt-auto bg-zinc-900 hover:bg-black text-white font-semibold py-2 rounded-lg transition duration-200"
-                    >
-                        Order Product
-                    </button>
+                            <button
+                                onClick={() => handleOrder(product)}
+                                className="mt-auto bg-zinc-900 hover:bg-black text-white font-semibold py-2 rounded-lg transition duration-200"
+                            >
+                                Order Product
+                            </button>
 
-                    {/* Adit & Delete Buttons */}
+
+                            {/* Adit & Delete Buttons */}
                     <div className="mt-auto flex gap-2 pt-2 justify-end">
                         <Button
                             onClick={() => handleEdit(product.id)}

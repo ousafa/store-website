@@ -34,8 +34,10 @@ class OrderItemResource extends JsonResource
                 ]
             ],
             'includes' => [
-                'order' => OrderResource::collection($this->order),
-            ]
+                'product' => $this->whenLoaded('product') ? new ProductResource($this->product) : null,
+            ],
+
+
         ];
     }
 }

@@ -8,6 +8,8 @@ const EditProduct = () => {
     const navigate = useNavigate();
 
     const [categories, setCategories] = useState([]);
+    const [errors, setErrors] = useState({});
+
     const [formData, setFormData] = useState({
         name: product.attributes.name || "",
         description: product.attributes.description || "",
@@ -36,6 +38,7 @@ const EditProduct = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setErrors({}); // reset errors avant submit
 
         const payload = new FormData();
         payload.append("_method", "PATCH"); // Laravel method spoofing
@@ -52,8 +55,9 @@ const EditProduct = () => {
         try {
             await updateProduct(product.id, payload, true); // true = multipart
             navigate("/products");
-        } catch (error) {
-            console.error("Error updating product:", error);
+        }catch (err) {
+            setErrors(err);
+
         }
     };
 
@@ -141,6 +145,17 @@ const EditProduct = () => {
                         ))}
                     </select>
                 </div>
+
+                {errors && Object.keys(errors).length > 0 && (
+                    <div className="text-red-500 mt-4 mb-4">
+                        {Object.entries(errors).map(([field, messages]) => (
+                            <p key={field}>*{Array.isArray(messages) ? messages.join(", ") : messages}</p>
+                        ))}
+                    </div>
+                )}
+
+
+
 
 
                 <div className="flex justify-between">

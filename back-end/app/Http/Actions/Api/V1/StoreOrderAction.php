@@ -4,6 +4,7 @@ namespace App\Http\Actions\Api\V1;
 
 use App\Http\Requests\Api\V1\StoreOrderItemRequest;
 use App\Http\Requests\Api\V1\StoreOrderRequest;
+use App\Http\Resources\V1\OrderResource;
 use App\Models\Order;
 use App\Models\Product;
 use Illuminate\Support\Facades\DB;
@@ -54,8 +55,7 @@ class StoreOrderAction
                 $product = Product::find($item['product_id']);
                 $product->decrement('stock', $item['quantity']);
             }
-
-            return $order->load('items');
+            return new OrderResource($order);
         });
     }
 }

@@ -12,7 +12,7 @@ import {
     deleteProduct
 } from "../../loaders/productsLoader.js";
 
-const Show = () => {
+const ShowProduct = () => {
     const productDetails = useLoaderData();
     const product = productDetails.data;
     const navigate = useNavigate();
@@ -111,4 +111,4 @@ const Show = () => {
     );
 };
 
-export default Show;
+export default ShowProduct;
