@@ -14,13 +14,16 @@ const getHeaders = (isFormData = false) => {
 
 
 // List Products
-export const categoriesLoader = async () => {
-    const response = await fetch(`${BASE_URL}/categories`, {
+export const categoriesLoader = async ({ request }) => {
+    const url = new URL(request.url);
+    const page = url.searchParams.get("page") || 1;
+
+    const response = await fetch(`${BASE_URL}/categories?page=${page}`, {
         headers: getHeaders(),
     });
 
     if (!response.ok) {
-        throw new Error("Could not fetch category list");
+        throw new Error("Could not fetch categories");
     }
 
     return response.json();

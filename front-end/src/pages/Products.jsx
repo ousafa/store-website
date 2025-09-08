@@ -1,5 +1,11 @@
 import React from "react";
-import { useLoaderData, Link, useNavigate, useRevalidator} from "react-router-dom";
+import {
+    useLoaderData,
+    Link,
+    useNavigate,
+    useRevalidator,
+    useSearchParams
+} from "react-router-dom";
 
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -13,8 +19,10 @@ import {
 const Products = () => {
     const productsData = useLoaderData();
     const products = productsData.data || [];
+    const meta = productsData.meta || {};
     const navigate = useNavigate();
-    const revalidator = useRevalidator(); // hook to revalidate loader
+    const revalidator = useRevalidator();
+    const [searchParams, setSearchParams] = useSearchParams();
 
 
     const handleOrder = async (product) => {
@@ -85,6 +93,9 @@ const Products = () => {
         }
     };
 
+    const goToPage = (page) => {
+        setSearchParams({ page });
+    };
     return (
         <>
             <div className="flex flex-col items-center justify-center p-6 mt-6">
@@ -133,7 +144,7 @@ const Products = () => {
                     {/* Order Button */}
                             <button
                                 onClick={() => handleOrder(product)}
-                                className="mt-auto bg-zinc-900 hover:bg-black text-white font-semibold py-2 rounded-lg transition duration-200"
+                                className="mt-auto bg-zinc-900 hover:bg-black text-white font-semibold py-2 rounded-lg transition duration-200 cursor-pointer"
                             >
                                 Order Product
                             </button>
@@ -165,6 +176,49 @@ const Products = () => {
                 </div>
                 ))}
         </div>
+
+            {/* Pagination */}
+            {meta && (
+                <div className="flex justify-center items-center gap-2 my-6">
+                    <Button
+                        variant="outlined"
+                        onClick={() => goToPage(meta.current_page - 1)}
+                        disabled={meta.current_page === 1}
+                        sx={{
+                            borderColor: "#7c3aed",
+                            color: "#7c3aed",
+                            "&:hover": { backgroundColor: "#6d28d9",  color: "#fff", },
+                            "&.Mui-disabled": {
+                                backgroundColor: "#ddd",
+                                color: "#888",
+                            },
+                        }}
+                    >
+                        Prev
+                    </Button>
+                    <span className="px-4">
+                        Page {meta.current_page} of {meta.last_page}
+                    </span>
+
+                    <Button
+                        variant="outlined"
+                        onClick={() => goToPage(meta.current_page + 1)}
+                        disabled={meta.current_page === meta.last_page}
+                        sx={{
+                            borderColor: "#7c3aed",
+                            color: "#7c3aed",
+                            "&:hover": { backgroundColor: "#6d28d9",  color: "#fff", },
+                            "&.Mui-disabled": {
+                                backgroundColor: "#ddd",
+                                color: "#888",
+                            },
+                        }}
+                    >
+                        Next
+                    </Button>
+                </div>
+            )}
+
         </>
     );
 };

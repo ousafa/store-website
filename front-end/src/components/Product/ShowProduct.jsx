@@ -9,7 +9,8 @@ import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import Button from '@mui/material/Button';
 import {
-    deleteProduct
+    deleteProduct,
+    orderProduct
 } from "../../loaders/productsLoader.js";
 
 const ShowProduct = () => {
@@ -18,13 +19,62 @@ const ShowProduct = () => {
     const navigate = useNavigate();
     const revalidator = useRevalidator();
 
-    if (!product) {
+    if (!product) {s
         return (
             <div className="flex justify-center items-center h-[80vh]">
                 <p className="text-gray-500 text-lg">Product not found.</p>
             </div>
         );
     }
+    const handleOrder = async (product) => {
+        if (!window.confirm(`Are you sure you want to order ${product.attributes.name}?`)) return;
+
+        try {
+
+            const userId = localStorage.getItem("user_id"); // make sure you saved it on login
+
+            const payload = {
+                data: {
+                    attributes: {
+                        user_id: userId,
+                        status: "pending"
+                    },
+                    includes: {
+                        items: [
+                            {
+                                product_id: product.id,
+                                quantity: 1,
+                                price: product.attributes.price
+                            }
+                        ]
+                    }
+                }
+            };
+
+
+            await orderProduct(payload);
+
+            // après orderProduct(formData)
+            alert("Product ordered successfully!");
+
+            // Incrémente le badge
+            let currentCount = parseInt(localStorage.getItem("orderCount")) || 0;
+            currentCount += 1;
+            localStorage.setItem("orderCount", currentCount.toString());
+
+            // Re-render Navbar si nécessaire
+            window.dispatchEvent(new Event("storage"));
+
+        }catch (error) {
+            console.error(error);
+            if (error.errors) {
+                alert("Failed to order product:\n" + Object.values(error.errors).flat().join("\n"));
+            } else {
+                alert("Failed to order product: " + error.message);
+            }
+        }
+
+    };
 
     const handleEdit = () => {
         navigate(`/products/${product.id}/edit`);
@@ -97,7 +147,7 @@ const ShowProduct = () => {
                     </Button>
                 </div>
                 <div className="flex justify-end gap-2 ">
-                    <button className="bg-black text-white px-6 py-2 rounded hover:bg-gray-800 transition">
+                    <button  onClick={() => handleOrder(product)} className="cursor-pointer bg-black text-white px-6 py-2 rounded hover:bg-gray-800 transition">
                         Order Now
                     </button>
                     <Link to="/products">

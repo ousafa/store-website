@@ -14,13 +14,17 @@ const getHeaders = (isFormData = false) => {
 
 
 // List Orders
-export const ordersLoader = async () => {
-    const response = await fetch(`${BASE_URL}/orders`, {
+// Get paginated orders
+export const ordersLoader = async ({ request }) => {
+    const url = new URL(request.url);
+    const page = url.searchParams.get("page") || 1;
+
+    const response = await fetch(`${BASE_URL}/orders?page=${page}`, {
         headers: getHeaders(),
     });
 
     if (!response.ok) {
-        throw new Error("Could not fetch order list");
+        throw new Error("Could not fetch orders");
     }
 
     return response.json();

@@ -21,13 +21,16 @@ export const getCategories = async () => {
 
 
 // List Products
-export const productsLoader = async () => {
-    const response = await fetch(`${BASE_URL}/products`, {
+export const productsLoader = async ({ request }) => {
+    const url = new URL(request.url);
+    const page = url.searchParams.get("page") || 1;
+
+    const response = await fetch(`${BASE_URL}/products?page=${page}`, {
         headers: getHeaders(),
     });
 
     if (!response.ok) {
-        throw new Error("Could not fetch product list");
+        throw new Error("Could not fetch products");
     }
 
     return response.json();

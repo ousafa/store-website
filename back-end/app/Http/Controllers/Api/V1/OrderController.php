@@ -23,7 +23,9 @@ class OrderController extends Controller
     public function index()
     {
         // load both user and items
-        $orders = Order::with(['user', 'items.product'])->paginate(10);
+        $orders = Order::with(['user', 'items'])
+            ->latest()
+            ->paginate(8);
 
         return OrderResource::collection($orders);
     }

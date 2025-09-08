@@ -1,5 +1,11 @@
 import React from "react";
-import { useLoaderData, Link, useNavigate, useRevalidator } from "react-router-dom";
+import {
+    useLoaderData,
+    Link,
+    useNavigate,
+    useRevalidator,
+    useSearchParams
+} from "react-router-dom";
 
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -10,8 +16,10 @@ import { deleteCategory } from "../loaders/categoriesLoader.js";
 const Categories = () => {
     const categoryData = useLoaderData();
     const categories = categoryData.data || [];
+    const meta = categoryData.meta || {};
     const navigate = useNavigate();
     const revalidator = useRevalidator();
+    const [searchParams, setSearchParams] = useSearchParams();
 
     const handleEdit = (categoryId) => {
         navigate(`/categories/${categoryId}/edit`);
@@ -29,7 +37,9 @@ const Categories = () => {
             alert("Failed to delete category.");
         }
     };
-
+    const goToPage = (page) => {
+        setSearchParams({ page });
+    };
     return (
         <>
             <div className="flex flex-col items-center justify-center p-6 mt-6">
@@ -95,6 +105,51 @@ const Categories = () => {
                     </div>
                 ))}
             </div>
+
+            {/* Pagination */}
+            {meta && (
+                <div className="flex justify-center items-center gap-2 my-6">
+                    <Button
+                        variant="outlined"
+                        onClick={() => goToPage(meta.current_page - 1)}
+                        disabled={meta.current_page === 1}
+                        sx={{
+                            borderColor: "#7c3aed",
+                            color: "#7c3aed",
+                            "&:hover": { backgroundColor: "#6d28d9",  color: "#fff", },
+                            "&.Mui-disabled": {
+                                backgroundColor: "#ddd",
+                                color: "#888",
+                            },
+                        }}
+                    >
+                        Prev
+                    </Button>
+
+                    <span className="px-4">
+                        Page {meta.current_page} of {meta.last_page}
+                    </span>
+
+                    <Button
+                        variant="outlined"
+                        onClick={() => goToPage(meta.current_page + 1)}
+                        disabled={meta.current_page === meta.last_page}
+                        sx={{
+                            borderColor: "#7c3aed",
+                            color: "#7c3aed",
+                            "&:hover": { backgroundColor: "#6d28d9",  color: "#fff", },
+                            "&.Mui-disabled": {
+                                backgroundColor: "#ddd",
+                                color: "#888",
+                            },
+                        }}
+                    >
+                        Next
+                    </Button>
+                </div>
+            )}
+
+
         </>
     );
 };
