@@ -86,7 +86,7 @@ const ShowProduct = () => {
         try {
             await deleteProduct(id);
             alert("Product deleted successfully!");
-            revalidator.revalidate(); // refresh loader data
+           navigate('/products');
         } catch (error) {
             console.error(error);
             alert("Failed to delete product.");
@@ -138,7 +138,7 @@ const ShowProduct = () => {
                         Edit
                     </Button>
                     <Button
-                        onClick={handleDelete}
+                        onClick={() => handleDelete(product.id)}
                         variant="contained"
                         color="error"
                         startIcon={<DeleteIcon />}

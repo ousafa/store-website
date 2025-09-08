@@ -90,7 +90,7 @@ export const updateProduct = async (id, payload, isFormData = false) => {
         throw data.errors;
     }
 
-    return response.json();
+    return data;
 };
 
 

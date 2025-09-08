@@ -52,7 +52,7 @@ const Login = () => {
                     </div>
                     <button
                         type="submit"
-                        className="w-full bg-black text-white py-2 rounded-lg hover:bg-gray-800 transition duration-200 cursor-pointer"
+                        className="w-full bg-violet-600 text-white py-2 rounded-lg hover:bg-violet-700 transition duration-200 cursor-pointer"
 
                     >
                         Login
@@ -61,7 +61,8 @@ const Login = () => {
                 {error && <p className="text-red-500 mt-4 text-center">{error}</p>}
                 <p className="text-sm text-gray-500 mt-4 text-center">
                     Don't have an account?{' '}
-                    <a href="/register" className="text-black-500 hover:underline">Register</a>
+                    <a href="/register" className="text-violet-600 hover:underline">Register</a>
+
                 </p>
             </div>
         </div>
