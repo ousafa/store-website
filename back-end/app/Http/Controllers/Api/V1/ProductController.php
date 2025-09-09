@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
+use App\Http\Filters\V1\ProductFilter;
 use App\Http\Requests\Api\V1\ReplaceProductRequest;
 use App\Http\Requests\Api\V1\StoreProductRequest;
 use App\Http\Requests\Api\V1\UpdateProductRequest;
@@ -19,9 +20,10 @@ class ProductController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(ProductFilter $filters)
     {
         return ProductResource::collection(Product::with('category')
+            ->filter($filters)
             ->latest()
             ->paginate(8));
     }

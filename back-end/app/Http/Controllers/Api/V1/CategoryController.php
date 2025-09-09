@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
+use App\Http\Filters\V1\CategoryFilter;
 use App\Http\Requests\Api\V1\ReplaceCategoryRequest;
 use App\Http\Requests\Api\V1\ReplaceProductRequest;
 use App\Http\Requests\Api\V1\StoreCategoryRequest;
@@ -16,10 +17,15 @@ use Illuminate\Http\Request;
 class CategoryController extends Controller
 {
     use ApiResponses;
-    public function index()
+    public function index(CategoryFilter $filters)
     {
-        return CategoryResource::collection(Category::paginate(10));
+        return CategoryResource::collection(
+            Category::filter($filters)
+            ->latest()
+            ->paginate(8)
+        );
     }
+
 
 
     /**
