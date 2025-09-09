@@ -23,9 +23,8 @@ export const getCategories = async () => {
 // List Products
 export const productsLoader = async ({ request }) => {
     const url = new URL(request.url);
-    const page = url.searchParams.get("page") || 1;
 
-    const response = await fetch(`${BASE_URL}/products?page=${page}`, {
+    const response = await fetch(`${BASE_URL}/products?${url.searchParams.toString()}`, {
         headers: getHeaders(),
     });
 
@@ -35,6 +34,7 @@ export const productsLoader = async ({ request }) => {
 
     return response.json();
 };
+
 
 // Show Single Product
 export const productDetailsLoader = async ({ params }) => {

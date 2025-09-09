@@ -12,14 +12,21 @@ const getHeaders = (isFormData = false) => {
     return headers;
 };
 
+export const getUsers = async () => {
+    const response = await fetch(`${BASE_URL}/users`, { headers: getHeaders() });
+    if (!response.ok) throw new Error("Could not fetch users");
+    const data = await response.json();
+    return data.data || [];
+};
+
 
 // List Orders
 // Get paginated orders
 export const ordersLoader = async ({ request }) => {
     const url = new URL(request.url);
-    const page = url.searchParams.get("page") || 1;
+    const params = url.searchParams.toString(); // preserve all query params (page, filter, sort, etc.)
 
-    const response = await fetch(`${BASE_URL}/orders?page=${page}`, {
+    const response = await fetch(`${BASE_URL}/orders?${params}`, {
         headers: getHeaders(),
     });
 
@@ -29,6 +36,7 @@ export const ordersLoader = async ({ request }) => {
 
     return response.json();
 };
+
 
 // Show Single Order
 export const orderDetailsLoader = async ({ params }) => {
